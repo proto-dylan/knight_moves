@@ -49,25 +49,37 @@ class ChessGame
 
 
     def knight_moves(position, destination)
-        moves = [[-1,2][1,2][2,1][2,-1][1,-2][-1,-2][-2,-1][-2,1]]
+        moves = [[-1,2],[1,2],[2,1],[2,-1],[1,-2],[-1,-2],[-2,-1],[-2,1]]
+        root =  Node.new(position) 
+        root_node = [root]
+        print "Root : #{root_node}"
         col = position[0]
         row = position[1]
-        
-        moves.each do |move|
-            if is_valid_move?(move, col, row)
-                node=Node.new()
-            end
-        end
-        
-        
-        
-
-   
-    end
-    
+        path = []
+        while not root_node.empty? && path.empty?
+            parent_node = root_node.shift
+            moves.each do |move|
+                if is_valid_move?(move, col, row)
+                    current = [parent_node.position[0]+move[0], parent_node.position[1]+move[1]]
+                    child = Node.new(current, parent_node)
+                    parent_node.children.push(child)
+                    root_node.push(child)
+                    if parent_node.position == destination
+                        while not parent_node.nil?
+                            path.push(parent_node.position)
+                            parent_node = parent_node.parent
+                        end
+                        return path.reverse
+                    end
+                end
+            end 
+        end    
+    end  
 end
 game = ChessGame.new
 
-
+moves = game.knight_moves([3,3],[4,3])
+puts "You made it in #{moves.length-1} moves! Heres your path:"
+moves.each{|move| p move}
 
 
